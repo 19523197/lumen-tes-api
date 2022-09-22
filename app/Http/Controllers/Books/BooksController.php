@@ -36,7 +36,7 @@ class BooksController extends Controller
 
     public function show($id)
     {
-        $result = Books::where('book_id', $id);
+        $result = Books::where('book_id', $id)->get();
 
         if (!$result) {
             return response()->json(['message' => 'error'], 404);
