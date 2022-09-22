@@ -20,3 +20,9 @@ $router->get('/', function () use ($router) {
 $router->get('/books', 'Books\BooksController@index');
 
 $router->get('/books/{id}', 'Books\BooksController@show');
+
+$router->post('/books/{id}', 'Books\BooksController@show');
+
+$router->put('/books/{id}', 'Books\BooksController@update');
+
+$router->delete('/books/{id}', 'Books\BooksController@destroy');

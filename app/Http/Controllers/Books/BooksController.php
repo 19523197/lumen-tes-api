@@ -45,6 +45,17 @@ class BooksController extends Controller
         return response()->json($result, 200);
     }
 
+    public function create(Request $request)
+    {
+        $book = Books::create($request->all());
+
+        if (!$book) {
+            return response()->json(['message' => 'error'], 404);
+        }
+
+        return response()->json($book, 200);
+    }
+
     public function update(Request $request, $id)
     {
         $this->validate($request, [
