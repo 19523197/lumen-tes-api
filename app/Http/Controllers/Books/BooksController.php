@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Books;
 
 use App\Models\Books;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Http\Response;
 
 
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Date;
 
 class BooksController extends Controller
 {
@@ -47,6 +49,8 @@ class BooksController extends Controller
 
     public function create(Request $request)
     {
+        $request->createdAt = Carbon::now();
+        $request->updatedAt = Carbon::now();
         $book = Books::create($request->all());
 
         if (!$book) {
