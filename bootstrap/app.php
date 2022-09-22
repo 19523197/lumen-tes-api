@@ -98,7 +98,7 @@ $app->middleware([
 |
 */
 
-$app->register(CatchAllOptionsRequestsProvider::class);
+$app->register(App\Providers\CatchAllOptionsRequestsProvider::class);
 
 // $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\AuthServiceProvider::class);
