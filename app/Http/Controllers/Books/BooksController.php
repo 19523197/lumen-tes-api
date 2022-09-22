@@ -71,11 +71,10 @@ class BooksController extends Controller
             'price' => 'required|numeric',
         ]);
 
-        $SelectedBook = Books::where('book_id', $id)->get();
+        $SelectedBook = Books::find($id);
         if (!$SelectedBook) {
             return response()->json(['message' => 'error'], 404);
         }
-
         $SelectedBook->title = $request->title;
         $SelectedBook->summary = $request->summary;
         $SelectedBook->cover_url = $request->cover_url;
