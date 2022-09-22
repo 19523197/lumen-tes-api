@@ -17,6 +17,6 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
-$router->get('/buku', 'Books\BooksController@index');
+$router->get('/books', 'Books\BooksController@index');
 
 $router->get('/books/{id}', 'Books\BooksControlelr@show');
