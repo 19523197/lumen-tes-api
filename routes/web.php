@@ -21,7 +21,7 @@ $router->get('/books', 'Books\BooksController@index');
 
 $router->get('/books/{id}', 'Books\BooksController@show');
 
-$router->post('/books/{id}', 'Books\BooksController@show');
+$router->post('/books/{id}', 'Books\BooksController@create');
 
 $router->put('/books/{id}', 'Books\BooksController@update');
 
