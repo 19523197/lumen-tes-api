@@ -49,8 +49,8 @@ class BooksController extends Controller
 
     public function create(Request $request)
     {
-        $request->createdAt = Carbon::now();
-        $request->updatedAt = Carbon::now();
+        // $request->createdAt = Carbon::now();
+        // $request->updatedAt = Carbon::now();
         $book = Books::create($request->all());
 
         if (!$book) {

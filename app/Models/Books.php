@@ -22,7 +22,9 @@ class Books extends Model
     ];
 
 
-    protected $guarded = ['id'];
+    public $timestamps = false;
+
+    protected $primaryKey = 'book_id';
     /**
      * The attributes excluded from the model's JSON form.
      *
