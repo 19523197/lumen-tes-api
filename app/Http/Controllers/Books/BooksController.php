@@ -27,7 +27,7 @@ class BooksController extends Controller
 
     public function index()
     {
-        $result = Books::all();
+        $result = Books::paginate(6);
         $categorySum = DB::table('books')->select('category', DB::raw('count(*) as total'))
             ->groupBy('category')
             ->get();
