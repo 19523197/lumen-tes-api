@@ -31,6 +31,14 @@ class Books extends Model
      * @var string[]
      */
 
+
+
+
+    public function paginateCategory($row, $query)
+    {
+        return Books::where('category', 'like', '%' . $query . '%')->paginate($row);
+    }
+
     public function scopeTitle($query)
     {
         if (request('title')) {

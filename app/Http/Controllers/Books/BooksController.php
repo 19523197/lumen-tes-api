@@ -27,20 +27,23 @@ class BooksController extends Controller
 
     public function index()
     {
-        $result = Books::paginate(5);
+        $result = Books::all();
+        $categorySum = DB::table('books')->select('category', DB::raw('count(*) as total'))
+            ->groupBy('category')
+            ->get();
         if (request('title')) {
-            return Books::where('title', 'like', '%' . request('title') . '%')->get();
+            $result = Books::where('title', 'like', '%' . request('title') . '%')->paginate(6);
+            return response()->json($result, 200);
         }
         if (request('category')) {
-            return  Books::where('category', 'like', '%' . request('category') . '%')->get();
-        }
-        if (request('summary')) {
-            return Books::where('summary', 'like', '%' . request('summary') . '%')->get();
+            $category = Books::where('title', 'like', '%' . request('category') . '%')->paginate(6);
+            return response()->json($category, 200);
         }
         if (!$result) {
             return response()->json(['message' => 'error'], 404);
         }
-        return response()->json($result, 200);
+
+        return response()->json($result, 200,);
     }
 
     public function show($id)
@@ -104,5 +107,10 @@ class BooksController extends Controller
         return response()->json(['message' => 'berhasil menghapus buku'], 200);
     }
 
+    public function paginateTitle($row, $query)
+    {
+        return Books::where('title', 'like', '%' . $query . '%')->paginate($row);
+    }
     //
+
 }
