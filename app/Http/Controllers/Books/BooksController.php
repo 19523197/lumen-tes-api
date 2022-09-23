@@ -27,12 +27,19 @@ class BooksController extends Controller
 
     public function index()
     {
-        $result = Books::all();
-
+        $result = Books::paginate(5);
+        if (request('title')) {
+            return Books::where('title', 'like', '%' . request('title') . '%')->get();
+        }
+        if (request('category')) {
+            return  Books::where('category', 'like', '%' . request('category') . '%')->get();
+        }
+        if (request('summary')) {
+            return Books::where('summary', 'like', '%' . request('summary') . '%')->get();
+        }
         if (!$result) {
             return response()->json(['message' => 'error'], 404);
         }
-
         return response()->json($result, 200);
     }
 

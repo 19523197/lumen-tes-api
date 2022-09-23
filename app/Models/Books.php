@@ -30,4 +30,17 @@ class Books extends Model
      *
      * @var string[]
      */
+
+    public function scopeTitle($query)
+    {
+        if (request('title')) {
+            return $query->where('title', 'like', '%' . request('title') . '%');
+        }
+        if (request('category')) {
+            return $query->where('category', 'like', '%' . request('category') . '%');
+        }
+        if (request('summary')) {
+            return $query->where('summary', 'like', '%' . request('summary') . '%');
+        }
+    }
 }
