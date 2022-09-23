@@ -17,12 +17,14 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 
+//ROUTES BOOKS
 $router->get('/books', 'Books\BooksController@index');
-
 $router->get('/books/{id}', 'Books\BooksController@show');
-
 $router->post('/books', 'Books\BooksController@create');
-
 $router->put('/books/{id}', 'Books\BooksController@update');
-
 $router->delete('/books/{id}', 'Books\BooksController@destroy');
+
+//ROUTES USER
+$router->get('/users', 'Users\UserController@index');
+$router->post('/register', 'Users\UserController@create');
+$router->post('/login', 'Users\UserController@login');

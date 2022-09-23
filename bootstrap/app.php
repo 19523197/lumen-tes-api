@@ -60,6 +60,7 @@ $app->singleton(
 |
 */
 
+$app->configure('jwt');
 $app->configure('app');
 
 
@@ -82,10 +83,10 @@ $app->middleware([
 //     App\Http\Middleware\ExampleMiddleware::class
 // ]);
 
-// $app->routeMiddleware([
-//     'auth' => App\Http\Middleware\Authenticate::class,
-//     'cors' =>  App\Http\Middleware\CorsMiddleware::class
-// ]);
+$app->routeMiddleware([
+    'auth' => App\Http\Middleware\Authenticate::class,
+    // 'cors' =>  App\Http\Middleware\CorsMiddleware::class
+]);
 
 /*
 |--------------------------------------------------------------------------
@@ -101,8 +102,11 @@ $app->middleware([
 // $app->register(App\Providers\CatchAllOptionsRequestsProvider::class);
 
 // $app->register(App\Providers\AppServiceProvider::class);
-// $app->register(App\Providers\AuthServiceProvider::class);
+$app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
+
+$app->register(Tymon\JWTAuth\Providers\LumenServiceProvider::class);
+
 
 /*
 |--------------------------------------------------------------------------
