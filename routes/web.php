@@ -18,13 +18,18 @@ $router->get('/', function () use ($router) {
 });
 
 //ROUTES BOOKS
-$router->get('/books', 'Books\BooksController@index');
-$router->get('/books/{id}', 'Books\BooksController@show');
-$router->post('/books', 'Books\BooksController@create');
-$router->put('/books/{id}', 'Books\BooksController@update');
-$router->delete('/books/{id}', 'Books\BooksController@destroy');
+$router->group(['prefix' => '/books'], function () use ($router) {
+    $router->get('/', 'Books\BooksController@index');
+    $router->get('/{id}', 'Books\BooksController@show');
+    $router->post('', 'Books\BooksController@create');
+    $router->put('/{id}', 'Books\BooksController@update');
+    $router->delete('/{id}', 'Books\BooksController@destroy');
+});
+
 
 //ROUTES USER
-$router->get('/users', 'Users\UserController@index');
-$router->post('/register', 'Users\UserController@create');
-$router->post('/login', 'Users\UserController@login');
+$router->group(['prefix' => '/user'], function () use ($router) {
+    $router->get('/', 'Users\UserController@index');
+    $router->post('/register', 'Users\UserController@create');
+    $router->post('/login', 'AuthController@login');
+});

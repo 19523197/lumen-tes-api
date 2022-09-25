@@ -33,17 +33,17 @@ class BooksController extends Controller
             ->get();
         if (request('title')) {
             $result = Books::where('title', 'like', '%' . request('title') . '%')->paginate(6);
-            return response()->json($result, 200);
+            return response()->json(['buku' => $result, 'categorySum' => $categorySum], 200);
         }
         if (request('category')) {
-            $category = Books::where('title', 'like', '%' . request('category') . '%')->paginate(6);
-            return response()->json($category, 200);
+            $category = Books::where('category', 'like', '%' . request('category') . '%')->paginate(6);
+            return response()->json(['buku' => $category, 'categorySum' => $categorySum], 200);
         }
         if (!$result) {
             return response()->json(['message' => 'error'], 404);
         }
 
-        return response()->json($result, 200,);
+        return response()->json(['buku' => $result, 'categorySum' => $categorySum], 200,);
     }
 
     public function show($id)
