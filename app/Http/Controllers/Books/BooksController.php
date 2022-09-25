@@ -32,11 +32,11 @@ class BooksController extends Controller
             ->groupBy('category')
             ->get();
         if (request('title')) {
-            $result = Books::where('title', 'like', '%' . request('title') . '%')->paginate(6);
+            $result = Books::where('title', 'ilike', '%' . request('title') . '%')->paginate(6);
             return response()->json(['buku' => $result, 'categorySum' => $categorySum], 200);
         }
         if (request('category')) {
-            $category = Books::where('category', 'like', '%' . request('category') . '%')->paginate(6);
+            $category = Books::where('category', 'ilike', '%' . request('category') . '%')->paginate(6);
             return response()->json(['buku' => $category, 'categorySum' => $categorySum], 200);
         }
         if (!$result) {
