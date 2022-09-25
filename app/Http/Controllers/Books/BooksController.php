@@ -31,14 +31,28 @@ class BooksController extends Controller
         $categorySum = DB::table('books')->select('category', DB::raw('count(*) as total'))
             ->groupBy('category')
             ->get();
+        if (request('category') && request('title')) {
+            $category = Books::where('category', '=', request('category'))
+                ->where('title', 'ilike', '%' . request('title') . '%')
+                ->paginate(6);
+            $categoryIni = DB::table('books')->select('category')->where('category', request('category'))
+                ->count();
+            return response()->json(['buku' => $category, 'totalCategoryIni' => $categoryIni, 'totalCategory' => $categorySum], 200);
+        }
         if (request('title')) {
             $result = Books::where('title', 'ilike', '%' . request('title') . '%')->paginate(6);
-            return response()->json(['buku' => $result, 'categorySum' => $categorySum], 200);
+            $categoryIni = DB::table('books')->select('category', DB::raw('count(*) as total'))->where('title', 'ilike', '%' . request('title') . '%')
+                ->groupBy('category')
+                ->get();
+            return response()->json(['buku' => $result, 'totalCategoryIni' => $categoryIni, 'totalCategory' => $categorySum], 200);
         }
         if (request('category')) {
-            $category = Books::where('category', 'ilike', '%' . request('category') . '%')->paginate(6);
-            return response()->json(['buku' => $category, 'categorySum' => $categorySum], 200);
+            $category = Books::where('category', '=', request('category'))->paginate(6);
+            $categoryIni = DB::table('books')->select('category')->where('category', request('category'))
+                ->count();
+            return response()->json(['buku' => $category, 'totalCategoryIni' => $categoryIni, 'totalCategory' => $categorySum], 200);
         }
+
         if (!$result) {
             return response()->json(['message' => 'error'], 404);
         }
