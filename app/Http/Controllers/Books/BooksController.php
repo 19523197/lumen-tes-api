@@ -28,6 +28,7 @@ class BooksController extends Controller
     public function index()
     {
         $result = Books::paginate(6);
+        $jumlahBuku = Books::count();
         $categorySum = DB::table('books')->select('category', DB::raw('count(*) as total'))
             ->groupBy('category')
             ->get();
@@ -35,22 +36,28 @@ class BooksController extends Controller
             $category = Books::where('category', '=', request('category'))
                 ->where('title', 'ilike', '%' . request('title') . '%')
                 ->paginate(6);
+            $jumlahBuku = $category->count();
             $categoryIni = DB::table('books')->select('category')->where('category', request('category'))
                 ->count();
-            return response()->json(['buku' => $category, 'totalCategoryIni' => $categoryIni, 'totalCategory' => $categorySum], 200);
+            $categorySum = DB::table('books')->select('category', DB::raw('count(*) as total'))
+                ->where('title', 'ilike', '%' . request('title') . '%')
+                ->groupBy('category')
+                ->get();
+            return response()->json(['buku' => $category, 'jumlah buku' => $jumlahBuku, 'totalCategoryIni' => $categoryIni, 'totalCategory' => $categorySum,], 200);
         }
         if (request('title')) {
             $result = Books::where('title', 'ilike', '%' . request('title') . '%')->paginate(6);
             $categoryIni = DB::table('books')->select('category', DB::raw('count(*) as total'))->where('title', 'ilike', '%' . request('title') . '%')
                 ->groupBy('category')
                 ->get();
-            return response()->json(['buku' => $result, 'totalCategoryIni' => $categoryIni, 'totalCategory' => $categorySum], 200);
+            $totalBuku = Books::where('title', 'ilike', '%' . request('title') . '%')->count();
+            return response()->json(['buku' => $result, 'totalCategoryIni' => $categoryIni, 'totalBuku' => $totalBuku], 200);
         }
         if (request('category')) {
             $category = Books::where('category', '=', request('category'))->paginate(6);
             $categoryIni = DB::table('books')->select('category')->where('category', request('category'))
                 ->count();
-            return response()->json(['buku' => $category, 'totalCategoryIni' => $categoryIni, 'totalCategory' => $categorySum], 200);
+            return response()->json(['buku' => $category, 'totalBuku' => $jumlahBuku, 'totalCategoryIni' => $categoryIni, 'totalCategory' => $categorySum], 200);
         }
 
         if (!$result) {

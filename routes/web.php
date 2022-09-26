@@ -2,6 +2,8 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
+use App\Http\Controllers\AuthController;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -32,4 +34,5 @@ $router->group(['prefix' => '/user'], function () use ($router) {
     $router->get('/', 'Users\UserController@index');
     $router->post('/register', 'Users\UserController@create');
     $router->post('/login', 'AuthController@login');
+    $router->post('/logout', 'AuthController@logout');
 });
