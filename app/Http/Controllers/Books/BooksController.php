@@ -32,6 +32,9 @@ class BooksController extends Controller
         $categorySum = DB::table('books')->select('category', DB::raw('count(*) as total'))
             ->groupBy('category')
             ->get();
+        if (request('category') == 0 && request('title') == NULL) {
+            return response()->json(['buku' => $result, 'categorySum' => $categorySum, 'totalBukuStatis' => $jumlahBuku], 200,);
+        }
         if (request('category') && request('title')) {
             $category = Books::where('category', '=', request('category'))
                 ->where('title', 'ilike', '%' . request('title') . '%')
