@@ -30,7 +30,7 @@ class BooksController extends Controller
         $result = Books::paginate(6);
         $jumlahBuku = Books::count();
         $categorySum = DB::table('books')->select('category', DB::raw('count(*) as total'))
-            ->groupBy('category')(request('sort') == 'asc')
+            ->groupBy('category')
             ->get();
         if (request('category') == 0 && request('title') == NULL) {
             return response()->json(['buku' => $result, 'categorySum' => $categorySum, 'totalBukuStatis' => $jumlahBuku], 200,);
