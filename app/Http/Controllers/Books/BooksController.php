@@ -86,6 +86,9 @@ class BooksController extends Controller
     {
         // $request->createdAt = Carbon::now();
         // $request->updatedAt = Carbon::now();
+        if (!$request->header('bearer')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
         $book = Books::create($request->all());
 
         if (!$book) {
@@ -97,6 +100,9 @@ class BooksController extends Controller
 
     public function update(Request $request, $id)
     {
+        if (!$request->header('bearer')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
         $this->validate($request, [
             'title' => 'required',
             'summary' => 'required',
