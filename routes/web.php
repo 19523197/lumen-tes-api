@@ -35,4 +35,5 @@ $router->group(['prefix' => '/user'], function () use ($router) {
     $router->post('/register', 'Users\UserController@create');
     $router->post('/login', 'AuthController@login');
     $router->post('/logout', 'AuthController@logout');
+    $router->get('/{id}', 'AuthController@me');
 });
