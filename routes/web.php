@@ -23,7 +23,7 @@ $router->get('/', function () use ($router) {
 $router->group(['prefix' => '/books'], function () use ($router) {
     $router->get('/', 'Books\BooksController@index');
     $router->get('/{id}', 'Books\BooksController@show');
-    $router->post('', 'Books\BooksController@create');
+    $router->post('/', 'Books\BooksController@create');
     $router->put('/{id}', 'Books\BooksController@update');
     $router->delete('/{id}', 'Books\BooksController@destroy');
 });

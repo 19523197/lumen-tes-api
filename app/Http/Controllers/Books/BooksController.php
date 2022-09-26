@@ -127,8 +127,11 @@ class BooksController extends Controller
         return response()->json($SelectedBook, 200);
     }
 
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
+        if (!$request->header('bearer')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
         $result = Books::where('book_id', $id)->delete();
 
         if (!$result) {
