@@ -30,7 +30,7 @@ class BooksController extends Controller
         $result = Books::paginate(6);
         $jumlahBuku = Books::count();
         $categorySum = DB::table('books')->select('category', DB::raw('count(*) as total'))
-            ->groupBy('category')
+            ->groupBy('category')(request('sort') == 'asc')
             ->get();
         if (request('category') == 0 && request('title') == NULL) {
             return response()->json(['buku' => $result, 'categorySum' => $categorySum, 'totalBukuStatis' => $jumlahBuku], 200,);
@@ -39,11 +39,14 @@ class BooksController extends Controller
             $category = Books::where('category', '=', request('category'))
                 ->where('title', 'ilike', '%' . request('title') . '%')
                 ->paginate(6);
-            $jumlahBuku = DB::table('books')->select('category', DB::raw('count(*) as total'))
+            $jumlahBuku = DB::table('books')
+                ->select('category', DB::raw('count(*) as total'))
                 ->groupBy('category')->count();
-            $categoryIni = DB::table('books')->select('category')->where('category', request('category'))
+            $categoryIni = DB::table('books')
+                ->select('category')->where('category', request('category'))
                 ->count();
-            $categorySum = DB::table('books')->select('category', DB::raw('count(*) as total'))
+            $categorySum = DB::table('books')
+                ->select('category', DB::raw('count(*) as total'))
                 ->where('title', 'ilike', '%' . request('title') . '%')
                 ->groupBy('category')
                 ->get();
@@ -51,7 +54,9 @@ class BooksController extends Controller
         }
         if (request('title')) {
             $result = Books::where('title', 'ilike', '%' . request('title') . '%')->paginate(6);
-            $categoryIni = DB::table('books')->select('category', DB::raw('count(*) as total'))->where('title', 'ilike', '%' . request('title') . '%')
+            $categoryIni = DB::table('books')
+                ->select('category', DB::raw('count(*) as total'))
+                ->where('title', 'ilike', '%' . request('title') . '%')
                 ->groupBy('category')
                 ->get();
             $totalBuku = Books::where('title', 'ilike', '%' . request('title') . '%')->count();
@@ -59,7 +64,8 @@ class BooksController extends Controller
         }
         if (request('category')) {
             $category = Books::where('category', '=', request('category'))->paginate(6);
-            $categoryIni = DB::table('books')->select('category')->where('category', request('category'))
+            $categoryIni = DB::table('books')
+                ->select('category')->where('category', request('category'))
                 ->count();
             return response()->json(['buku' => $category, 'totalCategoryIni' => $categoryIni, 'totalCategory' => $categorySum, 'totalBukuStatis' => $jumlahBuku], 200);
         }
@@ -86,7 +92,7 @@ class BooksController extends Controller
     {
         // $request->createdAt = Carbon::now();
         // $request->updatedAt = Carbon::now();
-        if (!$request->header('bearer')) {
+        if (!$request->header('Authorization')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
         $book = Books::create($request->all());
@@ -100,7 +106,7 @@ class BooksController extends Controller
 
     public function update(Request $request, $id)
     {
-        if (!$request->header('bearer')) {
+        if (!$request->header('Authorization')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
         $this->validate($request, [
@@ -129,7 +135,7 @@ class BooksController extends Controller
 
     public function destroy(Request $request, $id)
     {
-        if (!$request->header('bearer')) {
+        if (!$request->header('Authorization')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
         $result = Books::where('book_id', $id)->delete();
@@ -139,11 +145,6 @@ class BooksController extends Controller
         }
 
         return response()->json(['message' => 'berhasil menghapus buku'], 200);
-    }
-
-    public function paginateTitle($row, $query)
-    {
-        return Books::where('title', 'like', '%' . $query . '%')->paginate($row);
     }
     //
 
