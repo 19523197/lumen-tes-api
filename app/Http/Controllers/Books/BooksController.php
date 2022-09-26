@@ -27,18 +27,21 @@ class BooksController extends Controller
 
     public function index()
     {
-        $result = Books::paginate(6);
+
+        $result = (request('sort') == 'desc') ? (Books::orderBy('book_id', 'desc')) : (Books::orderBy('book_id', 'asc'));
+
         $jumlahBuku = Books::count();
         $categorySum = DB::table('books')->select('category', DB::raw('count(*) as total'))
             ->groupBy('category')
             ->get();
         if (request('category') == 0 && request('title') == NULL) {
-            return response()->json(['buku' => $result, 'categorySum' => $categorySum, 'totalBukuStatis' => $jumlahBuku], 200,);
+            return response()->json(['buku' => $result->paginate(6), 'categorySum' => $categorySum, 'totalBukuStatis' => $jumlahBuku], 200,);
         }
         if (request('category') && request('title')) {
             $category = Books::where('category', '=', request('category'))
-                ->where('title', 'ilike', '%' . request('title') . '%')
-                ->paginate(6);
+                ->where('title', 'ilike', '%' . request('title') . '%');
+            (request('sort') == 'desc') ? ($category->orderBy('book_id', 'desc')) : ($category->orderBy('book_id', 'asc'));
+
             $jumlahBuku = DB::table('books')
                 ->select('category', DB::raw('count(*) as total'))
                 ->groupBy('category')->count();
@@ -50,31 +53,33 @@ class BooksController extends Controller
                 ->where('title', 'ilike', '%' . request('title') . '%')
                 ->groupBy('category')
                 ->get();
-            return response()->json(['buku' => $category, 'totalBukuStatis' => $jumlahBuku, 'totalCategoryIni' => $categoryIni, 'totalCategory' => $categorySum,], 200);
+            return response()->json(['buku' => $category->paginate(6), 'totalBukuStatis' => $jumlahBuku, 'totalCategoryIni' => $categoryIni, 'totalCategory' => $categorySum,], 200);
         }
         if (request('title')) {
-            $result = Books::where('title', 'ilike', '%' . request('title') . '%')->paginate(6);
+            $result = Books::where('title', 'ilike', '%' . request('title') . '%');
+            (request('sort') == 'desc') ? ($result->orderBy('book_id', 'desc')) : ($result->orderBy('book_id', 'asc'));
             $categoryIni = DB::table('books')
                 ->select('category', DB::raw('count(*) as total'))
                 ->where('title', 'ilike', '%' . request('title') . '%')
                 ->groupBy('category')
                 ->get();
             $totalBuku = Books::where('title', 'ilike', '%' . request('title') . '%')->count();
-            return response()->json(['buku' => $result, 'totalCategoryIni' => $categoryIni, 'totalBukuStatis' => $totalBuku], 200);
+            return response()->json(['buku' => $result->paginate(6), 'totalCategoryIni' => $categoryIni, 'totalBukuStatis' => $totalBuku], 200);
         }
         if (request('category')) {
-            $category = Books::where('category', '=', request('category'))->paginate(6);
+            $category = Books::where('category', '=', request('category'));
+            (request('sort') == 'desc') ? ($category->orderBy('book_id', 'desc')) : ($category->orderBy('book_id', 'asc'));
             $categoryIni = DB::table('books')
                 ->select('category')->where('category', request('category'))
                 ->count();
-            return response()->json(['buku' => $category, 'totalCategoryIni' => $categoryIni, 'totalCategory' => $categorySum, 'totalBukuStatis' => $jumlahBuku], 200);
+            return response()->json(['buku' => $category->paginate(6), 'totalCategoryIni' => $categoryIni, 'totalCategory' => $categorySum, 'totalBukuStatis' => $jumlahBuku], 200);
         }
 
         if (!$result) {
             return response()->json(['message' => 'error'], 404);
         }
 
-        return response()->json(['buku' => $result, 'categorySum' => $categorySum, 'totalBukuStatis' => $jumlahBuku], 200,);
+        return response()->json(['buku' => $result->paginate(6), 'categorySum' => $categorySum, 'totalBukuStatis' => $jumlahBuku], 200,);
     }
 
     public function show($id)
