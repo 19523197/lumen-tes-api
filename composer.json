@@ -6,6 +6,9 @@
     "type": "project",
     "require": {
         "php": "^8.0",
+        "cloudinary/cloudinary_php": "^2.9",
+        "imagekit/imagekit": "^3.0",
+        "jrm2k6/cloudder": "0.4.*",
         "laravel/lumen-framework": "^9.0",
         "tymon/jwt-auth": "^1.0"
     },

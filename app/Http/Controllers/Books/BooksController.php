@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Books;
 
 use App\Models\Books;
 use App\Http\Controllers\Controller;
+use JD\Cloudder\Facades\Cloudder;
+use ImageKit\ImageKit;
+use Cloudinary\Configuration\Configuration;
+
 use Carbon\Carbon;
 use Illuminate\Http\Response;
 
@@ -23,6 +27,34 @@ class BooksController extends Controller
     public function __construct()
     {
         //
+    }
+
+    public function upload(Request $request)
+    {
+        // $file_url = "http://yourdomain/defaultimage.png";
+        // if ($request->cover_url && $request->cover_url->isValid()) {
+        //     $cloudder = Cloudder::upload($request->cover_url->getRealPath());
+        //     $uploadResult = $cloudder->getResult();
+        //     $file_url = $uploadResult["url"];
+        // }
+        $imagekit = new ImageKit(
+            env('IMAGEKIT_API_KEY'),
+            env('IMAGEKIT_API_SECRET'),
+            env('IMAGEKIT_URL_ENDPOINT')
+        );
+
+        $image = $request->cover_url;
+
+        // Upload Image - URL
+        $uploadFile = $imagekit->uploadFile([
+            "file" => fopen($request->cover_url, "r"),
+            "fileName" => $request->cover_url->getClientOriginalName(),
+            "useUniqueFileName" => true
+        ]);
+
+
+
+        return $uploadFile;
     }
 
     public function index()
@@ -100,7 +132,13 @@ class BooksController extends Controller
         if (!$request->header('Authorization')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-        $book = Books::create($request->all());
+        // dd($request->cover_url);
+        // $image = fopen(__DIR__ . "/" . $request->cover_url->getClientOriginalName(), "r");
+        $uploadImage = $this->upload($request);
+
+        $databuku = $request->all();
+        $databuku['cover_url'] = $uploadImage->result->url;
+        $book = Books::create($databuku);
 
         if (!$book) {
             return response()->json(['message' => 'error'], 404);
@@ -151,6 +189,8 @@ class BooksController extends Controller
 
         return response()->json(['message' => 'berhasil menghapus buku'], 200);
     }
+
     //
+
 
 }

@@ -38,7 +38,7 @@ class UserController extends Controller
         $this->validate($request, [
             'email' => 'required|email',
             'password' => 'required',
-            'name' => 'required|alpha|regex:/^[\pL\s\-]+$/u'
+            'name' => 'required'
         ]);
         if ($checkUser = User::where('email', $request->email)->exists()) {
             return response()->json(['message' => 'Email sudah terdaftar'], 400);
