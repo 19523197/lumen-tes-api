@@ -185,8 +185,8 @@ class BooksController extends Controller
         );
         // Upload Image - URL
         $uploadFile = $imagekit->uploadFile([
-            "file" => fopen($request->file(), "r"),
-            "fileName" => $request->file()->getClientOriginalName(),
+            "file" => fopen($request->cover_url, "r"),
+            "fileName" => $request->cover_url->getClientOriginalName(),
             "useUniqueFileName" => false
         ]);
 
