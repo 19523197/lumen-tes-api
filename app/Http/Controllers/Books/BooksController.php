@@ -99,6 +99,7 @@ class BooksController extends Controller
 
     public function create(Request $request)
     {
+        return response()->json($request, 200);
         // $request->createdAt = Carbon::now();
         // $request->updatedAt = Carbon::now();
         if (!$request->header('Authorization')) {
@@ -121,38 +122,38 @@ class BooksController extends Controller
 
     public function update($id, Request $request)
     {
-        return response()->json($request, 200);
-        // if (!$request->header('Authorization')) {
-        //     return response()->json(['message' => 'Unauthorized'], 401);
-        // }
-        // $SelectedBook = Books::find($id);
-        // if (!$SelectedBook) {
-        //     return response()->json(['message' => 'error, Buku tidak ditemukan'], 404);
-        // }
+
+        if (!$request->header('Authorization')) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+        $SelectedBook = Books::find($id);
+        if (!$SelectedBook) {
+            return response()->json(['message' => 'error, Buku tidak ditemukan'], 404);
+        }
 
 
-        // if (!is_String($request->cover_url)) {
-        //     $uploadImage = $this->upload($request);
-        //     $databuku = $request->all();
-        //     $databuku['cover_url'] = $uploadImage->result->url;
-        //     $SelectedBook->title = $databuku['title'];
-        //     $SelectedBook->summary = $databuku['summary'];
-        //     $SelectedBook->cover_url = $databuku['cover_url'];
-        //     $SelectedBook->author = $databuku['author'];
-        //     $SelectedBook->category = $databuku['category'];
-        //     $SelectedBook->price = $databuku['price'];
-        //     $SelectedBook->save();
-        //     return response()->json($SelectedBook, 200);
-        // }
+        if (!is_String($request->cover_url)) {
+            $uploadImage = $this->upload($request);
+            $databuku = $request->all();
+            $databuku['cover_url'] = $uploadImage->result->url;
+            $SelectedBook->title = $databuku['title'];
+            $SelectedBook->summary = $databuku['summary'];
+            $SelectedBook->cover_url = $databuku['cover_url'];
+            $SelectedBook->author = $databuku['author'];
+            $SelectedBook->category = $databuku['category'];
+            $SelectedBook->price = $databuku['price'];
+            $SelectedBook->save();
+            return response()->json($SelectedBook, 200);
+        }
 
-        // $SelectedBook->title = $request->title;
-        // $SelectedBook->summary = $request->summary;
-        // $SelectedBook->cover_url = $request->cover_url;
-        // $SelectedBook->author = $request->author;
-        // $SelectedBook->category = $request->category;
-        // $SelectedBook->price = $request->price;
-        // $SelectedBook->save();
-        // return response()->json($SelectedBook, 200);
+        $SelectedBook->title = $request->title;
+        $SelectedBook->summary = $request->summary;
+        $SelectedBook->cover_url = $request->cover_url;
+        $SelectedBook->author = $request->author;
+        $SelectedBook->category = $request->category;
+        $SelectedBook->price = $request->price;
+        $SelectedBook->save();
+        return response()->json($SelectedBook, 200);
     }
 
     public function destroy(Request $request, $id)
