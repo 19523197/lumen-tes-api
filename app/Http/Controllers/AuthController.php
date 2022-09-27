@@ -53,7 +53,7 @@ class AuthController extends Controller
      */
     public function logout()
     {
-        $this->logout();
+        Auth::logout();
 
         return response()->json(['message' => 'Successfully logged out']);
     }

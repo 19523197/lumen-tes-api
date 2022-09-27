@@ -29,34 +29,6 @@ class BooksController extends Controller
         //
     }
 
-    public function upload(Request $request)
-    {
-        // $file_url = "http://yourdomain/defaultimage.png";
-        // if ($request->cover_url && $request->cover_url->isValid()) {
-        //     $cloudder = Cloudder::upload($request->cover_url->getRealPath());
-        //     $uploadResult = $cloudder->getResult();
-        //     $file_url = $uploadResult["url"];
-        // }
-        $imagekit = new ImageKit(
-            env('IMAGEKIT_API_KEY'),
-            env('IMAGEKIT_API_SECRET'),
-            env('IMAGEKIT_URL_ENDPOINT')
-        );
-
-        $image = $request->cover_url;
-
-        // Upload Image - URL
-        $uploadFile = $imagekit->uploadFile([
-            "file" => fopen($request->cover_url, "r"),
-            "fileName" => $request->cover_url->getClientOriginalName(),
-            "useUniqueFileName" => true
-        ]);
-
-
-
-        return $uploadFile;
-    }
-
     public function index()
     {
 
@@ -147,24 +119,31 @@ class BooksController extends Controller
         return response()->json($book, 200);
     }
 
-    public function update(Request $request, $id)
+    public function update($id, Request $request)
     {
         if (!$request->header('Authorization')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
-        $this->validate($request, [
-            'title' => 'required',
-            'summary' => 'required',
-            'cover_url' => 'required',
-            'author' => 'required',
-            'category' => 'required',
-            'price' => 'required|numeric',
-        ]);
-
         $SelectedBook = Books::find($id);
         if (!$SelectedBook) {
             return response()->json(['message' => 'error'], 404);
         }
+
+
+        if (!is_String($request->cover_url)) {
+            $uploadImage = $this->upload($request);
+            $databuku = $request->all();
+            $databuku['cover_url'] = $uploadImage->result->url;
+            $SelectedBook->title = $databuku['title'];
+            $SelectedBook->summary = $databuku['summary'];
+            $SelectedBook->cover_url = $databuku['cover_url'];
+            $SelectedBook->author = $databuku['author'];
+            $SelectedBook->category = $databuku['category'];
+            $SelectedBook->price = $databuku['price'];
+            $SelectedBook->save();
+            return response()->json($SelectedBook, 200);
+        }
+
         $SelectedBook->title = $request->title;
         $SelectedBook->summary = $request->summary;
         $SelectedBook->cover_url = $request->cover_url;
@@ -173,6 +152,7 @@ class BooksController extends Controller
         $SelectedBook->price = $request->price;
         $SelectedBook->save();
 
+        return "2";
         return response()->json($SelectedBook, 200);
     }
 
@@ -191,6 +171,46 @@ class BooksController extends Controller
     }
 
     //
+    public function upload(Request $request)
+    {
+        // $file_url = "http://yourdomain/defaultimage.png";
+        // if ($request->cover_url && $request->cover_url->isValid()) {
+        //     $cloudder = Cloudder::upload($request->cover_url->getRealPath());
+        //     $uploadResult = $cloudder->getResult();
+        //     $file_url = $uploadResult["url"];
+        // }
+        $imagekit = new ImageKit(
+            env('IMAGEKIT_API_KEY'),
+            env('IMAGEKIT_API_SECRET'),
+            env('IMAGEKIT_URL_ENDPOINT')
+        );
+        // Upload Image - URL
+        $uploadFile = $imagekit->uploadFile([
+            "file" => fopen($request->cover_url, "r"),
+            "fileName" => $request->cover_url->getClientOriginalName(),
+            "useUniqueFileName" => true
+        ]);
+        return $uploadFile;
+    }
 
+    public function deleteImage(Request $request)
+    {
+        // $file_url = "http://yourdomain/defaultimage.png";
+        // if ($request->cover_url && $request->cover_url->isValid()) {
+        //     $cloudder = Cloudder::upload($request->cover_url->getRealPath());
+        //     $uploadResult = $cloudder->getResult();
+        //     $file_url = $uploadResult["url"];
+        // }
+        $imageKit = new ImageKit(
+            env('IMAGEKIT_API_KEY'),
+            env('IMAGEKIT_API_SECRET'),
+            env('IMAGEKIT_URL_ENDPOINT')
+        );
+        // Upload Image - URL
+        // $deleteFile = $imageKit->deleteFile();
+        $getFileDetails = $imageKit->getDetails("file_id");
+        dd($getFileDetails);
 
+        return $getFileDetails;
+    }
 }
