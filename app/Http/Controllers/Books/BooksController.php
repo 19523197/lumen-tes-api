@@ -99,6 +99,7 @@ class BooksController extends Controller
 
     public function create(Request $request)
     {
+        $this->deleteImage($request);
         // $request->createdAt = Carbon::now();
         // $request->updatedAt = Carbon::now();
         if (!$request->header('Authorization')) {
@@ -151,8 +152,6 @@ class BooksController extends Controller
         $SelectedBook->category = $request->category;
         $SelectedBook->price = $request->price;
         $SelectedBook->save();
-
-        return "2";
         return response()->json($SelectedBook, 200);
     }
 
@@ -195,12 +194,6 @@ class BooksController extends Controller
 
     public function deleteImage(Request $request)
     {
-        // $file_url = "http://yourdomain/defaultimage.png";
-        // if ($request->cover_url && $request->cover_url->isValid()) {
-        //     $cloudder = Cloudder::upload($request->cover_url->getRealPath());
-        //     $uploadResult = $cloudder->getResult();
-        //     $file_url = $uploadResult["url"];
-        // }
         $imageKit = new ImageKit(
             env('IMAGEKIT_API_KEY'),
             env('IMAGEKIT_API_SECRET'),
@@ -208,7 +201,7 @@ class BooksController extends Controller
         );
         // Upload Image - URL
         // $deleteFile = $imageKit->deleteFile();
-        $getFileDetails = $imageKit->getDetails("file_id");
+        $getFileDetails = $imageKit->getDetails("6332a39a3226066c5c174cd9");
         dd($getFileDetails);
 
         return $getFileDetails;
