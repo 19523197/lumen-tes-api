@@ -99,7 +99,6 @@ class BooksController extends Controller
 
     public function create(Request $request)
     {
-        return response()->json($request, 200);
         // $request->createdAt = Carbon::now();
         // $request->updatedAt = Carbon::now();
         if (!$request->header('Authorization')) {
