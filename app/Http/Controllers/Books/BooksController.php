@@ -99,7 +99,6 @@ class BooksController extends Controller
 
     public function create(Request $request)
     {
-        $this->deleteImage($request);
         // $request->createdAt = Carbon::now();
         // $request->updatedAt = Carbon::now();
         if (!$request->header('Authorization')) {
