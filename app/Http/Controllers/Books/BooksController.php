@@ -91,7 +91,7 @@ class BooksController extends Controller
         $result = Books::where('book_id', $id)->get();
 
         if (!$result) {
-            return response()->json(['message' => 'error'], 404);
+            return response()->json(['message' => 'error, Buku tidak ditemukan'], 404);
         }
 
         return response()->json($result, 200);
@@ -113,7 +113,7 @@ class BooksController extends Controller
         $book = Books::create($databuku);
 
         if (!$book) {
-            return response()->json(['message' => 'error'], 404);
+            return response()->json(['message' => 'error, Buku tidak ditemukan'], 404);
         }
 
         return response()->json($book, 200);
@@ -126,7 +126,7 @@ class BooksController extends Controller
         }
         $SelectedBook = Books::find($id);
         if (!$SelectedBook) {
-            return response()->json(['message' => 'error'], 404);
+            return response()->json(['message' => 'error, Buku tidak ditemukan'], 404);
         }
 
 
@@ -186,8 +186,9 @@ class BooksController extends Controller
         $uploadFile = $imagekit->uploadFile([
             "file" => fopen($request->cover_url, "r"),
             "fileName" => $request->cover_url->getClientOriginalName(),
-            "useUniqueFileName" => true
+            "useUniqueFileName" => false
         ]);
+
         return $uploadFile;
     }
 
