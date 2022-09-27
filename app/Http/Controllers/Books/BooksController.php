@@ -121,6 +121,7 @@ class BooksController extends Controller
 
     public function update($id, Request $request)
     {
+        return response()->json($request, 200);
         if (!$request->header('Authorization')) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
