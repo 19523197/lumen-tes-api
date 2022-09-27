@@ -182,12 +182,10 @@ class BooksController extends Controller
             env('IMAGEKIT_API_SECRET'),
             env('IMAGEKIT_URL_ENDPOINT')
         );
-        dd($request->cover_url);
         // Upload Image - URL
         $uploadFile = $imagekit->uploadFile([
-
             "file" => fopen($request->file(), "r"),
-            "fileName" => $request->cover_url->getClientOriginalName(),
+            "fileName" => $request->file()->getClientOriginalName(),
             "useUniqueFileName" => false
         ]);
 
