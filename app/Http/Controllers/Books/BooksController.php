@@ -99,6 +99,7 @@ class BooksController extends Controller
 
     public function create(Request $request)
     {
+
         // $request->createdAt = Carbon::now();
         // $request->updatedAt = Carbon::now();
         if (!$request->header('Authorization')) {
@@ -147,7 +148,6 @@ class BooksController extends Controller
 
         $SelectedBook->title = $request->title;
         $SelectedBook->summary = $request->summary;
-        $SelectedBook->cover_url = $request->cover_url;
         $SelectedBook->author = $request->author;
         $SelectedBook->category = $request->category;
         $SelectedBook->price = $request->price;
