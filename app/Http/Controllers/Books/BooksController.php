@@ -57,7 +57,6 @@ class BooksController extends Controller
         }
         if (request('title')) {
             $result = $result->where('title', 'ilike', '%' . request('title') . '%');
-            (request('sort') == 'desc') ? ($result->orderBy('book_id', 'desc')) : ($result->orderBy('book_id', 'asc'));
             $categoryIni = DB::table('books')
                 ->select('category', DB::raw('count(*) as total'))
                 ->where('title', 'ilike', '%' . request('title') . '%')
