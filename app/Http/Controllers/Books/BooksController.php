@@ -83,7 +83,7 @@ class BooksController extends Controller
 
 
         return response()->json(['buku' => $result->paginate(6), 'categorySum' => $categorySum, 'totalBukuStatis' => $jumlahBuku]
-            + (($categoryIni) ? (['totalCategoryIni' => $categoryIni]) : ([])), 200,);
+            + ((isset($categoryIni)) ? (['totalCategoryIni' => $categoryIni]) : ([])), 200,);
     }
 
     public function show($id)
