@@ -31,20 +31,17 @@ class BooksController extends Controller
 
     public function index()
     {
-
-        $result = (request('sort') == 'desc') ? (Books::orderBy('book_id', 'desc')) : (Books::orderBy('book_id', 'asc'));
+        // $result = (request('sort') == 'desc') ? (Books::orderBy('book_id', 'desc')) : (Books::orderBy('book_id', 'asc'));4
+        // dd(request());
+        $result = Books::Query();
 
         $jumlahBuku = Books::count();
         $categorySum = DB::table('books')->select('category', DB::raw('count(*) as total'))
             ->groupBy('category')
             ->get();
-        if (request('category') == 0 && request('title') == NULL) {
-            return response()->json(['buku' => $result->paginate(6), 'categorySum' => $categorySum, 'totalBukuStatis' => $jumlahBuku], 200,);
-        }
         if (request('category') && request('title')) {
-            $category = Books::where('category', '=', request('category'))
+            $result = Books::where('category', '=', request('category'))
                 ->where('title', 'ilike', '%' . request('title') . '%');
-            (request('sort') == 'desc') ? ($category->orderBy('book_id', 'desc')) : ($category->orderBy('book_id', 'asc'));
 
             $jumlahBuku = DB::table('books')
                 ->select('category', DB::raw('count(*) as total'))
@@ -57,10 +54,9 @@ class BooksController extends Controller
                 ->where('title', 'ilike', '%' . request('title') . '%')
                 ->groupBy('category')
                 ->get();
-            return response()->json(['buku' => $category->paginate(6), 'totalBukuStatis' => $jumlahBuku, 'totalCategoryIni' => $categoryIni, 'totalCategory' => $categorySum,], 200);
         }
         if (request('title')) {
-            $result = Books::where('title', 'ilike', '%' . request('title') . '%');
+            $result = $result->where('title', 'ilike', '%' . request('title') . '%');
             (request('sort') == 'desc') ? ($result->orderBy('book_id', 'desc')) : ($result->orderBy('book_id', 'asc'));
             $categoryIni = DB::table('books')
                 ->select('category', DB::raw('count(*) as total'))
@@ -68,22 +64,26 @@ class BooksController extends Controller
                 ->groupBy('category')
                 ->get();
             $totalBuku = Books::where('title', 'ilike', '%' . request('title') . '%')->count();
-            return response()->json(['buku' => $result->paginate(6), 'totalCategoryIni' => $categoryIni, 'totalBukuStatis' => $totalBuku], 200);
         }
+
         if (request('category')) {
-            $category = Books::where('category', '=', request('category'));
-            (request('sort') == 'desc') ? ($category->orderBy('book_id', 'desc')) : ($category->orderBy('book_id', 'asc'));
+            $result = Books::where('category', '=', request('category'));
             $categoryIni = DB::table('books')
                 ->select('category')->where('category', request('category'))
                 ->count();
-            return response()->json(['buku' => $category->paginate(6), 'totalCategoryIni' => $categoryIni, 'totalCategory' => $categorySum, 'totalBukuStatis' => $jumlahBuku], 200);
+        }
+
+        if (request('sort') && request('order')) {
+            $result = $this->sorting($result, request('sort'), request('order'));
         }
 
         if (!$result) {
             return response()->json(['message' => 'error'], 404);
         }
 
-        return response()->json(['buku' => $result->paginate(6), 'categorySum' => $categorySum, 'totalBukuStatis' => $jumlahBuku], 200,);
+
+        return response()->json(['buku' => $result->paginate(6), 'categorySum' => $categorySum, 'totalBukuStatis' => $jumlahBuku]
+            + (($categoryIni) ? (['totalCategoryIni' => $categoryIni]) : ([])), 200,);
     }
 
     public function show($id)
@@ -193,18 +193,30 @@ class BooksController extends Controller
         return $uploadFile;
     }
 
-    public function deleteImage(Request $request)
+    public function sorting($query, $params, $orderBy)
     {
-        $imageKit = new ImageKit(
-            env('IMAGEKIT_API_KEY'),
-            env('IMAGEKIT_API_SECRET'),
-            env('IMAGEKIT_URL_ENDPOINT')
-        );
-        // Upload Image - URL
-        // $deleteFile = $imageKit->deleteFile();
-        $getFileDetails = $imageKit->getDetails("6332a39a3226066c5c174cd9");
-        dd($getFileDetails);
-
-        return $getFileDetails;
+        switch ($params) {
+            case 1:
+                $paramsKeyQuery = "book_id";
+                break;
+            case 2:
+                $paramsKeyQuery = "title";
+                break;
+            case 3:
+                $paramsKeyQuery = "price";
+                break;
+        }
+        switch ($orderBy) {
+            case 1:
+                $orderByQuery = "desc";
+                break;
+            case 2:
+                $orderByQuery = "asc";
+                break;
+        }
+        if (!$paramsKeyQuery || !$orderByQuery) {
+            return response()->json(['Message' => "error"]);
+        }
+        return $query->orderBy($paramsKeyQuery, $orderByQuery);
     }
 }

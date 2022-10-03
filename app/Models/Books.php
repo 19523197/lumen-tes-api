@@ -51,4 +51,32 @@ class Books extends Model
             return $query->where('summary', 'like', '%' . request('summary') . '%');
         }
     }
+
+    // public function scopesorting($key, $orderBy)
+    // {
+    //     dd($key);
+    //     switch ($key) {
+    //         case 1:
+    //             $paramsKeyQuery = "id";
+    //             break;
+    //         case 2:
+    //             $paramsKeyQuery = "title";
+    //             break;
+    //         case 3:
+    //             $paramsKeyQuery = "price";
+    //             break;
+    //     }
+    //     switch ($orderBy) {
+    //         case 1:
+    //             $orderByQuery = "desc";
+    //             break;
+    //         case 2:
+    //             $orderByQuery = "asc";
+    //             break;
+    //     }
+    //     if (!$paramsKeyQuery || !$orderByQuery) {
+    //         return response()->json(['Message' => "error"]);
+    //     }
+    //     return $this->orderBy($paramsKeyQuery, $orderByQuery);
+    // }
 }
